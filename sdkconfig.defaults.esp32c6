@@ -1,0 +1,74 @@
+CONFIG_IDF_TARGET="esp32c6"
+
+# Device identification (test vendor ID works with Apple/Google Home)
+CONFIG_DEVICE_VENDOR_ID=0xFFF1
+CONFIG_DEVICE_PRODUCT_ID=0x8003
+
+# libsodium
+CONFIG_LIBSODIUM_USE_MBEDTLS_SHA=y
+
+# NIMBLE
+CONFIG_BT_ENABLED=y
+CONFIG_BT_NIMBLE_ENABLED=y
+CONFIG_BT_NIMBLE_EXT_ADV=n
+CONFIG_BT_NIMBLE_HCI_EVT_BUF_SIZE=70
+# Reclaim the NimBLE heap once the device has joined a fabric
+CONFIG_USE_BLE_ONLY_FOR_COMMISSIONING=y
+
+# FreeRTOS should use legacy API
+CONFIG_FREERTOS_ENABLE_BACKWARD_COMPATIBILITY=y
+# 1 ms tick: the LED render task paces frames in milliseconds, and the 100 Hz
+# default would quantise 50 fps down to 33 fps and make the identify blink coarse.
+CONFIG_FREERTOS_HZ=1000
+
+# Enable OpenThread
+CONFIG_OPENTHREAD_ENABLED=y
+CONFIG_OPENTHREAD_SRP_CLIENT=y
+CONFIG_OPENTHREAD_DNS_CLIENT=y
+CONFIG_OPENTHREAD_LOG_LEVEL_DYNAMIC=n
+CONFIG_OPENTHREAD_LOG_LEVEL_NOTE=y
+CONFIG_OPENTHREAD_CLI=n
+
+# Disable lwip ipv6 autoconfig
+CONFIG_LWIP_IPV6_AUTOCONFIG=n
+
+# Use a custom partition table
+CONFIG_PARTITION_TABLE_CUSTOM=y
+CONFIG_PARTITION_TABLE_CUSTOM_FILENAME="partitions.csv"
+
+# LwIP config for OpenThread
+CONFIG_LWIP_IPV6_NUM_ADDRESSES=8
+CONFIG_LWIP_MULTICAST_PING=y
+
+# MDNS platform
+CONFIG_USE_MINIMAL_MDNS=n
+CONFIG_ENABLE_EXTENDED_DISCOVERY=y
+
+# Enable OTA Requestor
+CONFIG_ENABLE_OTA_REQUESTOR=y
+
+# Build Matter OTA image (creates .ota file alongside .bin)
+# CONFIG_CHIP_OTA_IMAGE_BUILD=y
+
+# Disable STA and AP for ESP32C6
+CONFIG_ENABLE_WIFI_STATION=n
+CONFIG_ENABLE_WIFI_AP=n
+
+# Button
+CONFIG_BUTTON_PERIOD_TIME_MS=20
+CONFIG_BUTTON_LONG_PRESS_TIME_MS=5000
+
+# Mode Select cluster (effect picker) lives on the light endpoint. The esp_matter
+# default for this count is 0, which would drop the cluster silently.
+CONFIG_ESP_MATTER_MODE_SELECT_CLUSTER_ENDPOINT_COUNT=1
+
+# Enable chip shell (we use esp_console instead, see main/app_console.c)
+CONFIG_ENABLE_CHIP_SHELL=n
+
+# The XIAO ESP32-C6's USB-C port is native USB, not a UART bridge. Everything else
+# in the console config is derived from this one symbol.
+# CONFIG_ESP_CONSOLE_USB_SERIAL_JTAG=y
+
+# Clusters this device needs: On/Off, Level Control, Color Control (HS|XY|CT) and
+# Mode Select. They are all enabled by default; see sdkconfig.defaults for the
+# block that switches the rest off.

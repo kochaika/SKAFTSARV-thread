@@ -1,0 +1,110 @@
+menu "SKAFTSARV Light"
+
+    menu "LED strip"
+
+        config SKAFT_LED_GPIO
+            int "WS281x data GPIO"
+            range 0 30
+            default 2
+            help
+                GPIO driving the strip's data line (the brown wire in a stock
+                SKAFTSARV). 2 is pad D2 on the XIAO ESP32-C6.
+
+                GPIO3 and GPIO14 are wired to the board's FM8625H RF switch and
+                must never be used for anything else.
+
+        config SKAFT_LED_COUNT
+            int "Number of LEDs on the strip"
+            range 1 300
+            default 30
+            help
+                A stock IKEA SKAFTSARV has 30.
+
+        config SKAFT_LED_RMT_CHANNEL
+            int "RMT TX channel"
+            range 0 1
+            default 0
+            help
+                The ESP32-C6 has two RMT channels capable of transmit. Nothing
+                else in this firmware uses RMT.
+
+        config SKAFT_LED_MEM_BLOCKS
+            int "RMT memory blocks for the strip channel"
+            range 1 2
+            default 2
+            help
+                Each C6 RMT channel owns 48 symbol words; one WS281x bit costs one
+                symbol. The legacy RMT driver refills the block from an ISR that
+                competes with the 802.15.4 radio, and a missed refill latches the
+                strip mid-frame (a visible flicker). Claiming both TX blocks gives
+                96 symbols, about 120 us of buffer instead of 60 us.
+
+                Set to 1 only if you need the second RMT TX channel for something else.
+
+    endmenu
+
+    menu "Rendering"
+
+        config SKAFT_RENDER_FPS
+            int "Effect frame rate (frames per second)"
+            range 10 100
+            default 50
+            help
+                Only animated effects redraw at this rate; a solid colour is sent
+                once and then the strip is left alone.
+
+        config SKAFT_GAMMA_X10
+            int "Dimming gamma, times 10"
+            range 10 30
+            default 22
+            help
+                Gamma applied to the brightness level before it scales the colour,
+                as a fixed-point value: 22 means gamma 2.2. Linear 8-bit dimming on
+                a WS281x collapses the bottom of the range into a handful of visible
+                steps. Set to 10 for no correction.
+
+    endmenu
+
+    menu "Colour temperature"
+
+        config SKAFT_CT_MIN_KELVIN
+            int "Warmest colour temperature (K)"
+            range 1000 6500
+            default 2000
+            help
+                Reported to Matter as ColorTempPhysicalMaxMireds. The strip has no
+                white LEDs, so colour temperature is approximated as tinted white.
+
+        config SKAFT_CT_MAX_KELVIN
+            int "Coolest colour temperature (K)"
+            range 2000 10000
+            default 6500
+            help
+                Reported to Matter as ColorTempPhysicalMinMireds.
+
+    endmenu
+
+    config SKAFT_ENABLE_CONSOLE
+        bool "Enable the USB-serial debug console"
+        default y
+        help
+            A small esp_console REPL on the USB-Serial-JTAG port for bench-testing
+            the strip and forcing a factory reset. See main/app_console.c.
+
+    config SKAFT_USE_EXTERNAL_ANTENNA
+        bool "Use the external U.FL antenna"
+        default n
+        help
+            The XIAO ESP32-C6 routes its radio through an FM8625H RF switch: GPIO3
+            enables the switch, GPIO14 picks the antenna. Enable this only if a U.FL
+            antenna is physically fitted. A board inside a plastic lamp body is
+            normally fine on the onboard ceramic antenna, which is the default.
+
+    config ENABLE_MEMORY_PROFILING
+        bool "Enable Memory Profiling"
+        default n
+        help
+            Enable this option to include memory profiling features in the example.
+            This will allow you to monitor memory usage during runtime.
+
+endmenu

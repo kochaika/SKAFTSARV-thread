@@ -1,0 +1,11 @@
+# ESP-IDF build output
+build/
+managed_components/
+dependencies.lock
+sdkconfig
+sdkconfig.old
+.cache/
+
+# esp-matter-mfg-tool output. Contains real commissioning credentials
+# (passcode, discriminator, DAC private key) -- never commit it.
+out/

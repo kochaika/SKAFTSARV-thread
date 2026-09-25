@@ -1,0 +1,11 @@
+dependencies:
+  espressif/cmake_utilities:
+    version: "^1"
+    rules: # will add "optional_component" only when all if clauses are True
+      - if: "idf_version >=5.0"
+      - if: "target in [esp32c2]"
+  # WS2812 output. This constraint must match the one declared by
+  # device_hal/led_driver/idf_component.yml, which is also part of this build --
+  # asking for ^2 or ^3 here makes the component manager fail to resolve a single
+  # version. 1.0.0 is the legacy-RMT API; see main/strip.c for why that matters.
+  espressif/led_strip: "^1.0.0"
