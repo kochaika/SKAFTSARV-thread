@@ -1,3 +1,5 @@
+<img alt="Matter logo" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Logo_of_Matter_connectivity_standard.svg" width="250">
+
 # IKEA SKAFTSÄRV — Matter over Thread
 
 Matter-over-Thread firmware for an IKEA SKAFTSÄRV accent lamp with its control board
