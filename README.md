@@ -19,6 +19,8 @@ which does the same mod with WLED instead of Matter.
 
 ## Hardware
 
+<img alt="Hardware photo" src="images/hardware.jpg" width="750">
+
 ### Strip
 
 | Property | Value |
